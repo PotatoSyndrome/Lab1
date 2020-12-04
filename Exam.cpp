@@ -1,5 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "Exam.h"
 #include <stdio.h>
+#include <string.h>
 
 Exam::Exam()
 {
@@ -12,30 +15,29 @@ Exam::Exam()
 Exam::Exam(char* a_name, int a_date, int a_grade)
 {
 	printf("Constructor with parameters\n");
-	name = a_name;
+	set_name(a_name);
+	
 	date = a_date;
 	grade = a_grade;
 }
 
-Exam::Exam(Exam* a_exam)
+Exam::Exam(Exam* a_exam) 
 {
 	printf("Copy contsructor\n");
-
-	char* a_name = a_exam->get_name();
-	int a_name_size = 0;
-	while (*(a_name + a_name_size) != '\0') 
+	
+	if (a_exam != NULL)
 	{
-		a_name_size++;
-	}
-	name = new char[a_name_size + 1];
-	for (int i = 0; i < a_name_size; ++i) 
-	{
-		name[i] = a_name[i];
-	}
-	*(name + a_name_size) = '\0'; // name = a_exam.get_name();
+		set_name(a_exam->get_name());
 
-	date = a_exam->get_date();
-	grade = a_exam->get_grade();
+		date = a_exam->get_date();
+		grade = a_exam->get_grade();
+	}
+	else
+	{
+		name = new char[] {"Default name"};
+		date = 0;
+		grade = 2;
+	}
 }
 
 Exam::~Exam()
@@ -61,7 +63,18 @@ int Exam::get_grade()
 
 void Exam::set_name(char* a_name)
 {
-	name = a_name;
+
+	delete name;
+
+	if (a_name != NULL)
+	{
+		name = new char[strlen(a_name) + 1];
+		strcpy(name, a_name); // name = a_exam.get_name();
+	}
+	else
+	{
+		name = new char[] {"Default name"};
+	}
 }
 
 void Exam::set_date(int a_date)
@@ -78,5 +91,3 @@ void Exam::print()
 {
 	printf("Name:%s Date:%d Grade:%d\n", name, date, grade);
 }
-
-
